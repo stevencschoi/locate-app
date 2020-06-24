@@ -3,6 +3,8 @@ import { MapContext } from "../components/MapContext";
 
 import axios from "axios";
 
+const apiKey = process.env.REACT_APP_RAPIDAPI_KEY;
+
 export function useFormData() {
   const [state, setState] = useContext(MapContext);
 
@@ -18,7 +20,6 @@ export function useFormData() {
 
   const handleInputChange = e => {
     const inputValues = { ...state.inputs, [e.target.name]: e.target.value };
-
     setState(prev => ({
       ...prev,
       inputs: inputValues,
