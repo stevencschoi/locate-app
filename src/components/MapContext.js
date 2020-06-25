@@ -9,7 +9,7 @@ const MapContextProvider = props => {
       address: "40 Bay Street",
       city: "Toronto",
       province: "Ontario",
-      postal: "M5J 2X2",
+      postal: "",
     },
   });
 

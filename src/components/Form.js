@@ -34,6 +34,13 @@ export default function Form() {
         required
         onChange={handleInputChange}
       />
+      <input
+        type="text"
+        name="postal"
+        placeholder="Postal Code"
+        value={state.postal}
+        onChange={handleInputChange}
+      />
       <button>Find!</button>
     </form>
   );
