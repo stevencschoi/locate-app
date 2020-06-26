@@ -9,8 +9,6 @@ import {
   useLoadScript,
 } from "@react-google-maps/api";
 
-import { formatRelative } from "date-fns";
-
 // use places autocmoplete library for map search
 import usePlacesAutocomplete, {
   getGeocode,
@@ -83,6 +81,8 @@ export default function FormMap() {
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading Maps";
 
+  console.log("Selected", selected);
+
   return (
     <>
       <h1>Locator Map</h1>
@@ -130,7 +130,23 @@ export default function FormMap() {
 }
 
 function Locate({ panTo }) {
-  return <button>Locate Me</button>;
+  return (
+    <button
+      onClick={() => {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            panTo({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            });
+          },
+          () => null
+        );
+      }}
+    >
+      Locate Me
+    </button>
+  );
 }
 
 function Search({ panTo }) {
