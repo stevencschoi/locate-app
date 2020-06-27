@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 
 // import Search from "./Search";
 
@@ -7,9 +7,10 @@ import {
   Marker,
   InfoWindow,
   useLoadScript,
+  DistanceMatrixService,
 } from "@react-google-maps/api";
 
-// use places autocmoplete library for map search
+// use places autocomplete library for map search
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
@@ -50,6 +51,11 @@ export default function FormMap() {
   const [markers, setMarkers] = useState([]);
   const [selected, setSelected] = useState(null);
 
+  useEffect(() => {
+    console.log("Markers:", markers);
+  }, [markers]);
+
+  // create a new marker when the map is clicked
   const onMapClick = useCallback(e => {
     setMarkers(current => [
       ...current,
@@ -59,18 +65,30 @@ export default function FormMap() {
         time: new Date(),
       },
     ]);
-  });
+  }, []);
 
+  // set reference for map to prevent re-rendering
   const mapRef = useRef();
   const onMapLoad = useCallback(map => {
     mapRef.current = map;
   }, []);
 
-  const panTo = useCallback(({ lat, lng }) => {
-    mapRef.current.panTo({ lat, lng });
+  // pan to location
+  const panTo = useCallback(({ lat, lng }, address) => {
+    mapRef.current.panTo({ lat, lng, address });
     mapRef.current.setZoom(14);
+    setMarkers(current => [
+      ...current,
+      {
+        lat: lat,
+        lng: lng,
+        address: address,
+        time: new Date(),
+      },
+    ]);
   }, []);
 
+  // load scripts
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: apiKey,
     libraries,
@@ -80,8 +98,6 @@ export default function FormMap() {
   //if error loading maps
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading Maps";
-
-  console.log("Selected", selected);
 
   return (
     <>
@@ -98,8 +114,9 @@ export default function FormMap() {
       >
         {markers.map(marker => (
           <Marker
-            key={marker.index}
+            key={marker.time}
             position={{ lat: marker.lat, lng: marker.lng }}
+            address={marker.formatted_address}
             /* icon={{
               url: "iconUrl",
               scaledSize: new window.google.maps.Size(30,30),
@@ -120,7 +137,8 @@ export default function FormMap() {
             }}
           >
             <>
-              <h2>Clicked Location</h2>
+              <h3>{selected.title}</h3>
+              <span>{selected.address}</span>
             </>
           </InfoWindow>
         ) : null}
@@ -173,9 +191,10 @@ function Search({ panTo }) {
           try {
             const results = await getGeocode({ address });
             const { lat, lng } = await getLatLng(results[0]);
-            console.log("Lat lng", lat, lng);
+            const { formatted_address } = results[0];
+            console.log("Lat lng addy", lat, lng, formatted_address);
             console.log("Results", results[0]);
-            panTo({ lat, lng });
+            panTo({ lat, lng }, formatted_address);
           } catch (err) {
             console.error("Error!", err);
           }
