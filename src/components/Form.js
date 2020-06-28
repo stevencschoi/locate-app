@@ -14,7 +14,7 @@ export default function Form() {
         type="text"
         name="address"
         placeholder="Street Address"
-        value={state.address}
+        value={state.inputs.address}
         required
         onChange={handleInputChange}
       />
@@ -22,7 +22,7 @@ export default function Form() {
         type="text"
         name="city"
         placeholder="City"
-        value={state.city}
+        value={state.inputs.city}
         required
         onChange={handleInputChange}
       />
@@ -30,7 +30,7 @@ export default function Form() {
         type="text"
         name="province"
         placeholder="Province"
-        value={state.province}
+        value={state.inputs.province}
         required
         onChange={handleInputChange}
       />
@@ -38,7 +38,7 @@ export default function Form() {
         type="text"
         name="postal"
         placeholder="Postal Code"
-        value={state.postal}
+        value={state.inputs.postal}
         onChange={handleInputChange}
       />
       <button>Find!</button>

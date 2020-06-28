@@ -11,6 +11,13 @@ const MapContextProvider = props => {
       province: "Ontario",
       postal: "",
     },
+    origin: {
+      address: "",
+      city: "",
+      province: "",
+      postal: "",
+    },
+    markers: {},
   });
 
   return (

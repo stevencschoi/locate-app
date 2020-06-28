@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 
 // import Search from "./Search";
+import { useMapData } from "../helpers/useMapData";
 
 import {
   GoogleMap,
   Marker,
   InfoWindow,
-  useLoadScript,
+  DirectionsService,
   DistanceMatrixService,
+  useLoadScript,
 } from "@react-google-maps/api";
 
 // use places autocomplete library for map search
@@ -27,8 +29,6 @@ import {
 import "@reach/combobox/styles.css";
 
 import mapStyles from "./mapStyles";
-
-import { useFormData } from "../helpers/useFormData";
 
 const apiKey = process.env.REACT_APP_RAPIDAPI_KEY;
 // additional libraries needed for search capacity
@@ -50,10 +50,11 @@ const options = {
 export default function FormMap() {
   const [markers, setMarkers] = useState([]);
   const [selected, setSelected] = useState(null);
+  // const [response, setResponse] = useState({});
 
-  useEffect(() => {
-    console.log("Markers:", markers);
-  }, [markers]);
+  // useEffect(() => {
+  //   console.log("Markers:", markers);
+  // }, [markers]);
 
   // create a new marker when the map is clicked
   const onMapClick = useCallback(e => {
@@ -68,14 +69,16 @@ export default function FormMap() {
   }, []);
 
   // set reference for map to prevent re-rendering
-  const mapRef = useRef();
-  const onMapLoad = useCallback(map => {
-    mapRef.current = map;
-  }, []);
+  // const mapRef = useRef();
+  // const onMapLoad = useCallback(map => {
+  //   mapRef.current = map;
+  // }, []);
+
+  const { mapRef, onMapLoad } = useMapData();
 
   // pan to location
   const panTo = useCallback(({ lat, lng }, address) => {
-    mapRef.current.panTo({ lat, lng, address });
+    mapRef.current.panTo({ lat, lng }, address);
     mapRef.current.setZoom(14);
     setMarkers(current => [
       ...current,
@@ -87,6 +90,8 @@ export default function FormMap() {
       },
     ]);
   }, []);
+
+  // direction service
 
   // load scripts
   const { isLoaded, loadError } = useLoadScript({
