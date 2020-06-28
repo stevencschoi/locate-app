@@ -40,11 +40,14 @@ export default function Search(props) {
           setValue(address, false);
           clearSuggestions();
           try {
+            // fetch coordinates for searched location
             const results = await getGeocode({ address });
             const { lat, lng } = await getLatLng(results[0]);
             const { formatted_address } = results[0];
+
             console.log("Lat lng addy", lat, lng, formatted_address);
             console.log("Results", results[0]);
+
             props.panTo({ lat, lng }, formatted_address);
           } catch (err) {
             console.error("Error!", err);

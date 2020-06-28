@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 
-// import Search from "./Search";
+import Search from "./Search";
 import { useMapData } from "../helpers/useMapData";
 
 import {
@@ -74,22 +74,22 @@ export default function FormMap() {
   //   mapRef.current = map;
   // }, []);
 
-  const { mapRef, onMapLoad } = useMapData();
+  const { onMapLoad, panTo } = useMapData();
 
   // pan to location
-  const panTo = useCallback(({ lat, lng }, address) => {
-    mapRef.current.panTo({ lat, lng }, address);
-    mapRef.current.setZoom(14);
-    setMarkers(current => [
-      ...current,
-      {
-        lat: lat,
-        lng: lng,
-        address: address,
-        time: new Date(),
-      },
-    ]);
-  }, []);
+  // const panTo = useCallback(({ lat, lng }, address) => {
+  //   mapRef.current.panTo({ lat, lng }, address);
+  //   mapRef.current.setZoom(14);
+  //   setMarkers(current => [
+  //     ...current,
+  //     {
+  //       lat: lat,
+  //       lng: lng,
+  //       address: address,
+  //       time: new Date(),
+  //     },
+  //   ]);
+  // }, []);
 
   // direction service
 
@@ -172,56 +172,58 @@ function Locate({ panTo }) {
   );
 }
 
-function Search({ panTo }) {
-  const {
-    ready,
-    value,
-    suggestions: { status, data },
-    setValue,
-    clearSuggestions,
-  } = usePlacesAutocomplete({
-    // prefer locations near this location in search
-    requestOptions: {
-      location: { lat: () => 43.653225, lng: () => -79.383186 },
-      radius: 200 * 1000, // must be in metres; radius is 200km
-    },
-  });
+// {
+//   /*function Search({ panTo }) {
+//   const {
+//     ready,
+//     value,
+//     suggestions: { status, data },
+//     setValue,
+//     clearSuggestions,
+//   } = usePlacesAutocomplete({
+//     // prefer locations near this location in search
+//     requestOptions: {
+//       location: { lat: () => 43.653225, lng: () => -79.383186 },
+//       radius: 200 * 1000, // must be in metres; radius is 200km
+//     },
+//   });
 
-  return (
-    <div className="search">
-      <Combobox
-        onSelect={async address => {
-          setValue(address, false);
-          clearSuggestions();
-          try {
-            const results = await getGeocode({ address });
-            const { lat, lng } = await getLatLng(results[0]);
-            const { formatted_address } = results[0];
-            console.log("Lat lng addy", lat, lng, formatted_address);
-            console.log("Results", results[0]);
-            panTo({ lat, lng }, formatted_address);
-          } catch (err) {
-            console.error("Error!", err);
-          }
-        }}
-      >
-        <ComboboxInput
-          value={value}
-          onChange={e => {
-            setValue(e.target.value);
-          }}
-          disabled={!ready}
-          placeholder="Enter an address"
-        />
-        <ComboboxPopover>
-          <ComboboxList>
-            {status === "OK" &&
-              data.map(({ id, description }) => (
-                <ComboboxOption key={id} value={description} />
-              ))}
-          </ComboboxList>
-        </ComboboxPopover>
-      </Combobox>
-    </div>
-  );
-}
+//   return (
+//     <div className="search">
+//       <Combobox
+//         onSelect={async address => {
+//           setValue(address, false);
+//           clearSuggestions();
+//           try {
+//             const results = await getGeocode({ address });
+//             const { lat, lng } = await getLatLng(results[0]);
+//             const { formatted_address } = results[0];
+//             console.log("Lat lng addy", lat, lng, formatted_address);
+//             console.log("Results", results[0]);
+//             panTo({ lat, lng }, formatted_address);
+//           } catch (err) {
+//             console.error("Error!", err);
+//           }
+//         }}
+//       >
+//         <ComboboxInput
+//           value={value}
+//           onChange={e => {
+//             setValue(e.target.value);
+//           }}
+//           disabled={!ready}
+//           placeholder="Enter an address"
+//         />
+//         <ComboboxPopover>
+//           <ComboboxList>
+//             {status === "OK" &&
+//               data.map(({ id, description }) => (
+//                 <ComboboxOption key={id} value={description} />
+//               ))}
+//           </ComboboxList>
+//         </ComboboxPopover>
+//       </Combobox>
+//     </div>
+//   );
+// }*/
+// }
